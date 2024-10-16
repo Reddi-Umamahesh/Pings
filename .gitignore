@@ -1,0 +1,38 @@
+# Node modules
+node_modules/
+
+# Build directories
+/client/build/
+/client/public/build/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+
+# Temporary files
+tmp/
+temp/
+
+# IDE and Editor specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Test coverage
+/coverage/
+.nyc_output/
+
+# Other files to ignore
+npm-debug.log*

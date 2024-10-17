@@ -8,7 +8,7 @@ const UserSchema: Schema<IUser> = new Schema({
   bio: { type: String, required: true },
   avatar: {
     type: String,
-    required: true,
+    // required: true,
     },
     followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   

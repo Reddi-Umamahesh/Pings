@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 const express = require("express");
 import dotenv from "dotenv";
 import userRoute from '../routes/user.route'
+import pingRoute from "../routes/ping.router";
 const app = express();
 dotenv.config();
 const port = 3000;
@@ -25,6 +26,7 @@ app.listen(port, () => {
 });
 
 app.use('/api/v1/user', userRoute);
+app.use("/api/v1/ping", pingRoute);
 
 app.get("/",(req: Request, res: Response) => {
     res.send("hello")

@@ -12,8 +12,8 @@ const PingSchema: Schema<IPing> = new Schema({
   CreatedDate: { type: Date, default: Date.now },
   UpdatedDate: { type: Date, default: Date.now },
   meta: {
-    votes: { type: Number },
-    favs: { type: Number },
+    votes: { type: Number, default:0 },
+    favs: { type: Number , default:0 },
   },
 },{timestamps: true} );
 

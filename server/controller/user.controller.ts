@@ -44,7 +44,7 @@ export const register = async (
 };
 
 export const login = async (req: Request , res: Response) => {
-
+    console.log(req.body);
     const { email, password } = req.body
     if (!email || !password) {
         res.status(400).json({
@@ -54,6 +54,7 @@ export const login = async (req: Request , res: Response) => {
         return
     }
     const user = await User.findOne({ email, password })
+    console.log(email , password , user)
     if (!user) {
         res.status(400).json({
             success: false,

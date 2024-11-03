@@ -1,4 +1,4 @@
-import React from 'react'
+
 import sec4 from "../../assets/sec-2.png";
 const ECard = () => {
   return (

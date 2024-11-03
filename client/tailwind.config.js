@@ -6,6 +6,9 @@ export default {
     extend: {
       screens: {
         "cust-400": "415px",
+        "cust-500": "500px",
+        "cust-800": "800px",
+        "cust-900": "900px",
       },
       fontFamily: {
         sans: ['"Roboto"', "sans-serif"],

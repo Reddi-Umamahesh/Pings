@@ -66,22 +66,46 @@ const Secondary:React.FC = () => {
         <h5 className="font-semibold lg:text-3xl text-2xl">Editor's Pick</h5>
         <div className="grid cust-900:grid-cols-3  gap-4 mt-[3%] ">
           <div>
-            <ECard />
+            <ECard
+              title="Lorem ipsum dolor sit amet consectetur Harum, accusamus?"
+              img={image2}
+              date="March 10, 2024"
+            />
           </div>
           <div>
-            <ECard />
+            <ECard
+              title="Lorem ipsum dolor sit amet consectetur Harum, accusamus?"
+              img={image2}
+              date="March 10, 2024"
+            />
           </div>
           <div>
-            <ECard />
+            <ECard
+              title="Lorem ipsum dolor sit amet consectetur Harum, accusamus?"
+              img={image2}
+              date="March 10, 2024"
+            />
           </div>
           <div>
-            <ECard />
+            <ECard
+              title="Lorem ipsum dolor sit amet consectetur Harum, accusamus?"
+              img={image2}
+              date="March 10, 2024"
+            />
           </div>
           <div>
-            <ECard />
+            <ECard
+              title="Lorem ipsum dolor sit amet consectetur Harum, accusamus?"
+              img={image2}
+              date="March 10, 2024"
+            />
           </div>
           <div>
-            <ECard />
+            <ECard
+              title="Lorem ipsum dolor sit amet consectetur Harum, accusamus?"
+              img={image1}
+              date="March 10, 2024"
+            />
           </div>
         </div>
       </div>

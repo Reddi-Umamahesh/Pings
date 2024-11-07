@@ -21,11 +21,13 @@ const footer =
   msg: "Don't have an account ? ",
   link: "signup",
 };
-const LoginForm : React.FC= () => {
+
+const LoginForm: React.FC = () => {
+
   return (
     <div>
       <div className="">
-        <Form footerData={footer} bodyData={Bodydata} route='/login' />
+        <Form  footerData={footer} bodyData={Bodydata} route='/login' />
       </div>
     </div>
   );

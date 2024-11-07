@@ -1,16 +1,28 @@
 
-import sec4 from "../../assets/sec-2.png";
-const ECard = () => {
+import React from "react";
+interface props{
+  title: string;
+  img: string;
+  date: string; 
+}
+var imgs = {
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+};
+
+const ECard:React.FC<props> = ({title , img , date}) => {
   return (
-    <div className="flex w-full h-full 1 justify-center items-center gap-4 p-6 border rounded-md cursor-pointer">
+    <div className="flex w-full h-full  justify-center items-center gap-4 p-6 border rounded-md cursor-pointer max-h-[130px]">
       <div className=" h-full">
-        <img className="max-w-[100px]  rounded-md h-full" src={sec4} alt="NA" />
+        <img className="max-w-[100px]  rounded-md h-full" src={img} style={imgs} alt="NA" />
       </div>
       <div className="card-body">
-        <h5 className="">
-          Lorem ipsum dolor sit amet consectetur Harum, accusamus?
+        <h5 className="text-sm">
+          {
+            title
+          }
         </h5>
-        <p className="text-gray-400 text-sm">March 10, 2024</p>
+        <p className="text-gray-400 text-sm">{date}</p>
       </div>
     </div>
   );

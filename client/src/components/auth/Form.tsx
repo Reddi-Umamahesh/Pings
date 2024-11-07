@@ -1,4 +1,6 @@
-import React from "react";
+import React  from "react";
+import axios from "axios";
+import { authState, userState } from '../../recoil/userAtom'
 
 import {
   Card,
@@ -12,6 +14,14 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { user_api_endpoint } from "@/utils/constant";
+import { useUserContext } from "./UserContext";
+
+import {toast} from 'sonner'
+import { useSetRecoilState } from "recoil";
+import { useNavigate } from 'react-router-dom';
+
+
+
 
 interface InputData {
   name: string;
@@ -19,6 +29,12 @@ interface InputData {
   placeHolder: string;
   type: string;
 } 
+interface FormData {
+  email: string;
+  password: string;
+  username?: string;
+  bio?: string;
+}
 
 interface FooterData {
   button: string;
@@ -33,7 +49,52 @@ interface FormProps {
 }
 
 const Form: React.FC<FormProps> = ({ bodyData, footerData, route }) => {
-  const action = `${user_api_endpoint}`+route
+  const nagivate = useNavigate();
+  const setAuthToken = useSetRecoilState(authState)
+const setUser = useSetRecoilState(userState)
+  const { formData, setFormData } = useUserContext();
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setFormData((prev:FormData) => ({ ...prev, [name]: value })); 
+    };
+  
+  const action = `${user_api_endpoint}` + route
+  const submitHandler = async(e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault()
+    const data = { ...formData };
+    try {
+      
+      const res = await axios.post(action, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials : true
+      })
+      const {token , user} = res.data
+      if (token) {
+        localStorage.setItem('authToken', token);
+        setAuthToken(token);
+        setUser(user);
+        nagivate('/')
+      }
+
+    } catch (error) {
+      console.error(error);
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          toast.error(error.response?.data.message)
+        } else {
+          console.log("u1")
+          toast.error("Unexpected error occured");
+        }
+      } else {
+        console.log("u2");
+        toast.error("Unexpected error occured");
+      }
+
+    } 
+  }
   return (
     <div className=" flex cust-400:items-center   justify-center w-full h-screen overflow-y-auto  p-2 ">
       <Card className="cust-400:min-w-[300px] w-[320px] cust-400:w-auto  cust-400:min-h-[60%] overflow-auto h-fit cust-400:mt-0 mt-10">
@@ -45,14 +106,17 @@ const Form: React.FC<FormProps> = ({ bodyData, footerData, route }) => {
             Sign up to see Blogs, stories and many more..
           </CardDescription>
         </CardHeader>
-        <form action={action} method="post">
+        <form action={action} onSubmit={submitHandler} method="post" >
           <CardContent>
             <div className="grid w-full items-center gap-4">
               {bodyData.map((ele, index) => (
                 <div key={index} className="flex flex-col space-y-1.5">
                   <Label htmlFor="name">{ele.label}</Label>
                   <Input
+                    required
                     name={ele.name}
+                    value={formData[ele.name as keyof typeof formData]}
+                    onChange={handleInputChange}
                     type={ele.type}
                     placeholder={ele.placeHolder}
                   />

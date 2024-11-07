@@ -43,8 +43,8 @@ export const register = async (
   }
 };
 
-export const login = async (req: Request , res: Response) => {
-    console.log(req.body);
+export const login = async (req: Request, res: Response) => {
+    
     const { email, password } = req.body
     if (!email || !password) {
         res.status(400).json({
@@ -79,6 +79,7 @@ export const login = async (req: Request , res: Response) => {
     res.status(200).json({
         success: true,
         message: 'login successfull',
+        token,
         user : ReqUser
     })
     return

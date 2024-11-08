@@ -48,10 +48,47 @@ interface FormProps {
   route: string;
 }
 
+
+
+
+export const logout = async (
+  nagivate: any,
+  setAuthToken: any,
+  setUser : any
+) => {
+  
+  try {
+    const res = await axios.get(`${user_api_endpoint}/logout`, {
+      withCredentials : true
+    }
+      
+    );
+    if (res.data.success) {
+      toast.success("Logged out successfully");
+    }
+    localStorage.removeItem("authToken");
+    setAuthToken(null);
+    setUser(null);
+    nagivate("/");
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        toast.error(error.response?.data.message);
+      } else {
+        console.log("u1");
+        toast.error("Unexpected error occured");
+      }
+    } else {
+      console.log("u2");
+      toast.error("Unexpected error occured");
+    }
+  }
+};
+
 const Form: React.FC<FormProps> = ({ bodyData, footerData, route }) => {
   const nagivate = useNavigate();
-  const setAuthToken = useSetRecoilState(authState)
-const setUser = useSetRecoilState(userState)
+  const setAuthToken = useSetRecoilState(authState);
+  const setUser = useSetRecoilState(userState);
   const { formData, setFormData } = useUserContext();
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
@@ -77,6 +114,7 @@ const setUser = useSetRecoilState(userState)
         setAuthToken(token);
         setUser(user);
         nagivate('/')
+        toast.success(res.data.message)
       }
 
     } catch (error) {
@@ -92,9 +130,9 @@ const setUser = useSetRecoilState(userState)
         console.log("u2");
         toast.error("Unexpected error occured");
       }
-
     } 
   }
+  
   return (
     <div className=" flex cust-400:items-center   justify-center w-full h-screen overflow-y-auto  p-2 ">
       <Card className="cust-400:min-w-[300px] w-[320px] cust-400:w-auto  cust-400:min-h-[60%] overflow-auto h-fit cust-400:mt-0 mt-10">

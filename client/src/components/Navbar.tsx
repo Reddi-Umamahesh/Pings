@@ -2,17 +2,20 @@ import React, { useState } from "react";
 import { Input } from "./ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { LogOut, Menu, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { useRecoilValue } from "recoil";
-import { userState } from "@/recoil/userAtom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { authState, userState } from "@/recoil/userAtom";
+import { logout } from "./auth/Form";
 
 
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  
+  const navigate = useNavigate();
+  const setAuthToken = useSetRecoilState(authState);
+  const setUser = useSetRecoilState(userState);
   const user = useRecoilValue(userState);
   console.log(user)
 
@@ -25,7 +28,7 @@ const Navbar: React.FC = () => {
         </span>
         <div className="cust-900:gap-12 gap-10 cust-500:flex hidden text-base">
           <span className="mt-2 hover:underline ">Home</span>
-          <span className="mt-2 hover:underline">Add Blog</span>
+          <span className="mt-2 hover:underline text-nowrap">Add Blog</span>
           <span className="mt-2 hover:underline">Profile</span>
         </div>
       </div>
@@ -82,9 +85,20 @@ const Navbar: React.FC = () => {
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div>
-                        <h4 className="font-medium text-black">{ user.username}</h4>
-                      <p className="text-sm text-muted-foreground"></p>
+                      <h4 className="font-medium text-black">
+                        {user.username}'s Home
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        {user?.bio || ""}
+                      </p>
                     </div>
+                  </div>
+                  <Button variant="link">
+                    <Link to="/profile">view profile</Link>
+                  </Button>
+                  <div className="flex w-fit items-center gap-2 cursor-pointer">
+                    <LogOut />
+                    <Button onClick={() => logout(navigate , setAuthToken , setUser)} variant="link">logout</Button>
                   </div>
                 </PopoverContent>
               </Popover>

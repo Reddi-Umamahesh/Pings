@@ -1,6 +1,6 @@
-import React  from "react";
+import React from "react";
 import axios from "axios";
-import { authState, userState } from '../../recoil/userAtom'
+import { authState, userState } from "../../recoil/userAtom";
 
 import {
   Card,
@@ -16,24 +16,22 @@ import { Button } from "../ui/button";
 import { user_api_endpoint } from "@/utils/constant";
 import { useUserContext } from "./UserContext";
 
-import {toast} from 'sonner'
+import { toast } from "sonner";
 import { useSetRecoilState } from "recoil";
-import { useNavigate } from 'react-router-dom';
-
-
-
+import { useNavigate } from "react-router-dom";
 
 interface InputData {
   name: string;
   label: string;
   placeHolder: string;
   type: string;
-} 
+}
 interface FormData {
   email: string;
   password: string;
   username?: string;
   bio?: string;
+  avatar: null;
 }
 
 interface FooterData {
@@ -43,32 +41,31 @@ interface FooterData {
 }
 
 interface FormProps {
-  bodyData: InputData[] ;
+  bodyData: InputData[];
   footerData: FooterData;
   route: string;
+  type: string;
 }
-
-
-
 
 export const logout = async (
   nagivate: any,
   setAuthToken: any,
-  setUser : any
+  setUser: any
 ) => {
-  
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("user");
   try {
     const res = await axios.get(`${user_api_endpoint}/logout`, {
-      withCredentials : true
-    }
-      
-    );
+      withCredentials: true,
+    });
     if (res.data.success) {
       toast.success("Logged out successfully");
     }
-    localStorage.removeItem("authToken");
+
+    console.log(res);
     setAuthToken(null);
     setUser(null);
+
     nagivate("/");
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -85,54 +82,80 @@ export const logout = async (
   }
 };
 
-const Form: React.FC<FormProps> = ({ bodyData, footerData, route }) => {
-  const nagivate = useNavigate();
+const Form: React.FC<FormProps> = ({ bodyData, footerData, route, type }) => {
+  const navigate = useNavigate();
   const setAuthToken = useSetRecoilState(authState);
   const setUser = useSetRecoilState(userState);
   const { formData, setFormData } = useUserContext();
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      setFormData((prev:FormData) => ({ ...prev, [name]: value })); 
-    };
-  
-  const action = `${user_api_endpoint}` + route
-  const submitHandler = async(e: React.FormEvent<HTMLFormElement>
-  ) => {
-    e.preventDefault()
-    const data = { ...formData };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, files } = e.target;
+    if (type === "file" && files) {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: files[0],
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  const action = `${user_api_endpoint}` + route;
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData();
+    const typedFormData = formData as Record<string, any>;
+    for (const key in typedFormData) {
+      if (formData.hasOwnProperty(key)) {
+        data.append(key, typedFormData[key]);
+      }
+    }
     try {
-      
       const res = await axios.post(action, data, {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": type,
         },
-        withCredentials : true
-      })
-      const {token , user} = res.data
-      if (token) {
-        localStorage.setItem('authToken', token);
-        setAuthToken(token);
-        setUser(user);
-        nagivate('/')
-        toast.success(res.data.message)
-      }
+        withCredentials: true,
+      });
+      console.log("Server response:", res.data );
+      const { token, user } = res.data;
 
+      if (res.data.success) {
+         if (route === "/login") {
+           console.log("Login successful, navigating...");
+           toast.success("Login successful!");
+           navigate("/"); 
+         } else {
+           localStorage.setItem("authToken", token);
+           localStorage.setItem("user", JSON.stringify(user));
+
+           setAuthToken(token);
+           setUser(user);
+           toast.success(res.data.message);
+           toast.success("Signup successful!");
+           navigate("/login");
+         }
+
+        toast.success(res.data.message);
+      }
     } catch (error) {
       console.error(error);
       if (axios.isAxiosError(error)) {
         if (error.response) {
-          toast.error(error.response?.data.message)
+          toast.error(error.response?.data.message);
         } else {
-          console.log("u1")
+          console.log("u1");
           toast.error("Unexpected error occured");
         }
       } else {
         console.log("u2");
         toast.error("Unexpected error occured");
       }
-    } 
-  }
-  
+    }
+  };
+
   return (
     <div className=" flex cust-400:items-center   justify-center w-full h-screen overflow-y-auto  p-2 ">
       <Card className="cust-400:min-w-[300px] w-[320px] cust-400:w-auto  cust-400:min-h-[60%] overflow-auto h-fit cust-400:mt-0 mt-10">
@@ -144,29 +167,49 @@ const Form: React.FC<FormProps> = ({ bodyData, footerData, route }) => {
             Sign up to see Blogs, stories and many more..
           </CardDescription>
         </CardHeader>
-        <form action={action} onSubmit={submitHandler} method="post" >
+        <form
+          action={action}
+          onSubmit={submitHandler}
+          method="post"
+          encType="multipart/form-data"
+        >
           <CardContent>
             <div className="grid w-full items-center gap-4">
               {bodyData.map((ele, index) => (
                 <div key={index} className="flex flex-col space-y-1.5">
                   <Label htmlFor="name">{ele.label}</Label>
-                  <Input
-                    required
-                    name={ele.name}
-                    value={formData[ele.name as keyof typeof formData]}
-                    onChange={handleInputChange}
-                    type={ele.type}
-                    placeholder={ele.placeHolder}
-                  />
+                  {ele.type == "text" ? (
+                    <Input
+                      required
+                      name={ele.name}
+                      value={formData[ele.name as keyof typeof formData]}
+                      onChange={handleInputChange}
+                      type={ele.type}
+                      placeholder={ele.placeHolder}
+                    />
+                  ) : (
+                    <Input
+                      required
+                      name={ele.name}
+                      onChange={handleInputChange}
+                      type={ele.type}
+                      placeholder={ele.placeHolder}
+                    />
+                  )}
                 </div>
               ))}
             </div>
           </CardContent>
           <CardFooter className="flex justify-between flex-col space-y-8">
-            <Button type="submit" className="w-full">{footerData.button}</Button>
+            <Button type="submit" className="w-full">
+              {footerData.button}
+            </Button>
             <div>
               <span>{footerData.msg} </span>
-              <a href={`/${footerData.link}`} className="text-primary hover:underline">
+              <a
+                href={`/${footerData.link}`}
+                className="text-primary hover:underline"
+              >
                 {footerData.link}
               </a>
             </div>

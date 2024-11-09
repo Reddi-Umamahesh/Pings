@@ -10,11 +10,11 @@ const isAuthentiacted = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    console.log("hiii")
+    
     const token = req.cookies.token;
     if (!token) {
       res.status(401).json({
-        message: "You are not authenticated",
+        message: "You are not authenticated!",
       });
         return;
     }
@@ -24,7 +24,7 @@ const isAuthentiacted = async (
     ) as JwtPayload;
     if (!decoded) {
        res.status(401).json({
-        message: "You are not authenticated",
+        message: "You are not authenticated!",
        });
         return;
     }

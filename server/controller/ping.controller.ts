@@ -12,7 +12,7 @@ export const createPing = async (
   try {
     const { title, content } = req.body;
     const id = req.userId;
-
+    
     const ping = new Ping({ title: title, author: id, body: content });
     await ping.save();
     res.status(201).json({

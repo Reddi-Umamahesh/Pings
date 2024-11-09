@@ -27,7 +27,12 @@ const LoginForm: React.FC = () => {
   return (
     <div>
       <div className="">
-        <Form  footerData={footer} bodyData={Bodydata} route='/login' />
+        <Form
+          footerData={footer}
+          bodyData={Bodydata}
+          route="/login"
+          type="application/json"
+        />
       </div>
     </div>
   );

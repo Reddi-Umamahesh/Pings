@@ -7,9 +7,11 @@ import dotenv from "dotenv";
 import userRoute from '../routes/user.route'
 import pingRoute from "../routes/ping.router";
 import cors from "cors";
-import { METHODS } from "http";
+
+const cloudinary = require("cloudinary").v2;
 const app = express();
 dotenv.config();
+
 const port = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

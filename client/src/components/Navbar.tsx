@@ -1,23 +1,21 @@
 import React, { useState } from "react";
 import { Input } from "./ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { LogOut, Menu, X } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+
+import {  Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { authState, userState } from "@/recoil/userAtom";
-import { logout } from "./auth/Form";
+import { useRecoilValue} from "recoil";
+import {  userState } from "@/recoil/userAtom";
+
+import NavPopup from "./NavPopup";
 
 
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
-  const setAuthToken = useSetRecoilState(authState);
-  const setUser = useSetRecoilState(userState);
+
   const user = useRecoilValue(userState);
-  console.log(user)
 
   return (
     <div className="h-[10%] w-full top-0 bg-[#2e2e30] cust-500:px-[5%] px-[10%] flex  items-center justify-between text-white text-center cursor-pointer ">
@@ -27,9 +25,12 @@ const Navbar: React.FC = () => {
           Pings
         </span>
         <div className="cust-900:gap-12 gap-10 cust-500:flex hidden text-base">
-          <span className="mt-2 hover:underline ">Home</span>
-          <span className="mt-2 hover:underline text-nowrap">Add Blog</span>
-          <span className="mt-2 hover:underline">Profile</span>
+          <span className="mt-2 hover:underline ">
+            <Link to="/">Home</Link>
+            </span>
+          <span className="mt-2 hover:underline text-nowrap">
+            <Link to='/createping'>Add Blog</Link>{" "}
+          </span>
         </div>
       </div>
       <div className="cust-500:hidden flex ">
@@ -39,7 +40,23 @@ const Navbar: React.FC = () => {
             <div className="grid grid-rows-3 gap-4 cursor-pointer ">
               <div className="border-b-2 pb-1 text-sm">Home</div>
               <div className="border-b-2 pb-1">Add Blog</div>
-              <div className="border-b-2 pb-1">Profile </div>
+
+              {!user ? (
+                <div className="flex flex-wrap gap-2">
+                  <Link to="/login">
+                    <Button className="font-medium " variant="outline">
+                      login
+                    </Button>
+                  </Link>
+                  <Link to="/signup">
+                    <Button className="bg-[#3f3f46] hover:bg-[#18181b]">
+                      SignUP
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <NavPopup />
+              )}
             </div>
           </PopoverContent>
         </Popover>
@@ -67,42 +84,7 @@ const Navbar: React.FC = () => {
               </Link>
             </div>
           ) : (
-            <div>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Avatar className="h-10 w-10 border border-white ">
-                    <AvatarImage
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                </PopoverTrigger>
-                <PopoverContent className="w-80">
-                  <div className="flex gap-4 space-y-2">
-                    <Avatar className="cursor-pointer">
-                      <AvatarImage src="https://github.com/shadcn.png" />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <h4 className="font-medium text-black">
-                        {user.username}'s Home
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        {user?.bio || ""}
-                      </p>
-                    </div>
-                  </div>
-                  <Button variant="link">
-                    <Link to="/profile">view profile</Link>
-                  </Button>
-                  <div className="flex w-fit items-center gap-2 cursor-pointer">
-                    <LogOut />
-                    <Button onClick={() => logout(navigate , setAuthToken , setUser)} variant="link">logout</Button>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
+            <NavPopup />
           )}
         </div>
       </div>

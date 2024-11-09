@@ -15,6 +15,12 @@ const Bodydata = [
     type: "text",
   },
   {
+    name: "avatar",
+    label: "Avatar",
+    placeHolder: "profile photo",
+    type: "file",
+  },
+  {
     name: "email",
     label: "Email",
     placeHolder: "you@example.com",
@@ -37,7 +43,12 @@ const footer =
 const RegisterForm: React.FC = () => {
   return (
     <div className="">
-      <Form  footerData={footer} bodyData={Bodydata} route="/register" />
+      <Form
+        footerData={footer}
+        bodyData={Bodydata}
+        route="/register"
+        type="multipart/form-data"
+      />
     </div>
   );
 };

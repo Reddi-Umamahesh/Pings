@@ -11,6 +11,7 @@ import Home from "./components/home/Home";
 import { UserProvider } from "./components/auth/UserContext";
 import { Toaster } from "sonner";
 import { RecoilRoot } from "recoil";
+import CreatePing from "./components/createPing";
 const App: React.FC = () => {
   const router = createBrowserRouter([
     {
@@ -25,6 +26,10 @@ const App: React.FC = () => {
       path: "/login",
       element : <LoginForm /> 
     },
+    {
+      path: '/createping',
+      element : <CreatePing />
+    }
     
 
   ])
